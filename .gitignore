@@ -1,1 +1,6 @@
 *.DS_Store
+.vscode/
+*.code-workspace
+*__pycache__
+# ignore downloaded dataset
+*StanfordDogsData/
