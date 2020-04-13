@@ -73,7 +73,7 @@ if args.cuda:
 
 # Set up loss and optimizer
 criterion = nn.CrossEntropyLoss()
-optimizer = ptimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
+optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
 
 def train(epoch):
     '''
@@ -115,10 +115,10 @@ def evaluate(split, verbose=False, n_batches=None):
     loss = 0
     correct = 0
     n_examples = 0
-    if split == 'val':
-        loader = val_loader
-    elif split == 'test':
+    if split == 'test':
         loader = test_loader
+    elif split == 'val':
+        print("No validation set implemented!")
     for batch_i, batch in enumerate(loader):
         data, target = batch
         if args.cuda:
