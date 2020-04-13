@@ -9,6 +9,7 @@ from torchvision import transforms
 from torch.autograd import Variable
 import torch.optim as optim
 import torch.nn as nn
+from scratchmodel.model01 import MyModel
 
 from data.load_data import load_datasets
 
@@ -41,8 +42,8 @@ parser.add_argument('--test-batch-size', type=int, default=1000, metavar='N',
                     help='input batch size for testing (default: 1000)')
 parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                     help='number of batches between logging train status')
-parser.add_argument('--root', defualt="./",
-                    help="Root directory for project")
+parser.add_argument('--data-dir', default="data",
+                    help="Data directory")
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
 torch.manual_seed(args.seed)
@@ -56,9 +57,10 @@ kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
 
 # Stanford Dogs metadata
 n_classes = 120
+im_size = (3, 244, 244) # TODO
 
 # Datasets
-train_dataset, test_dataset, classes = load_datasets(args.root)
+train_dataset, test_dataset, classes = load_datasets(args.data_dir)
 
 # DataLoaders
 train_loader = torch.utils.data.DataLoader(train_dataset,
@@ -67,7 +69,7 @@ test_loader = torch.utils.data.DataLoader(test_dataset,
                  batch_size=args.batch_size, shuffle=True, **kwargs)
 
 # TODO: Load the model
-model = None
+model = MyModel(im_size, args.hidden_dim, args.kernel_size, n_classes)
 if args.cuda:
     model.cuda()
 

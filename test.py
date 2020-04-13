@@ -20,8 +20,8 @@ parser.add_argument('--model',
 # parser.add_argument('--test-dir', default='data',
 #                     help='directory that contains test_images.npy file '
 #                          '(downloaded automatically if necessary)')
-parser.add_argument('--root', defualt="./",
-                    help="Root directory for project")
+parser.add_argument('--data-dir', defualt="data",
+                    help="Data directory")
 parser.add_argument('--test-batch-size', type=int, default=1000, metavar='N',
                     help='input batch size for testing (default: 1000)')
 parser.add_argument('--no-cuda', action='store_true', default=False,
@@ -32,7 +32,7 @@ args.cuda = not args.no_cuda and torch.cuda.is_available()
 # Load Stanford Dogs data using torch data paradigm
 kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
 
-_, test_dataset, classes = load_datasets(args.root)
+_, test_dataset, classes = load_datasets(args.data_dir)
 
 test_loader = torch.utils.data.DataLoader(test_dataset,
                  batch_size=args.batch_size, shuffle=True, **kwargs)

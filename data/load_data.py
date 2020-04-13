@@ -30,8 +30,8 @@ def load_datasets(root, input_size=224, print_stats=True):
 
     if print_stats:
         print("Training set stats:")
-        train.stats()
+        train.get_stats()
         print("Testing set stats:")
-        test.stats()
+        test.get_stats()
 
     return train, test, classes

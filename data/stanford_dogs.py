@@ -3,7 +3,7 @@
 from PIL import Image
 import os.path as path
 import os
-import scipy.io.loadmat as loadmat
+import scipy.io
 
 import torch.utils.data as data
 from torchvision.datasets.utils import download_url, list_dir, list_files
@@ -79,7 +79,7 @@ class StanfordDogsDataset(data.Dataset):
             tuple: (image, target) where target is index of the target character class.
         """
         image_name, target_class = self._flat_breed_images[index]
-        image_path = join(self.images_folder, image_name)
+        image_path = path.join(self.images_folder, image_name)
         image = Image.open(image_path).convert('RGB')
 
         if self.cropped:
@@ -120,9 +120,9 @@ class StanfordDogsDataset(data.Dataset):
 
     def load_data_split(self):
         if self.train:
-            mat_file = loadmat(path.join(self.root, "train_list.mat"))
+            mat_file = scipy.io.loadmat(path.join(self.root, "train_list.mat"))
         else:
-            mat_file = loadmat(path.join(self.root, "test_list.mat"))
+            mat_file = scipy.io.loadmat(path.join(self.root, "test_list.mat"))
 
         split = mat_file["annotation_list"]
         split = [ item[0][0] for item in split ]
