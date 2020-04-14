@@ -21,11 +21,14 @@ class MyModel(nn.Module):
         #############################################################################
         channels, H, W = im_size
 
+        print('channels: ', channels, '\tH:', H, '\tW:', W)
+
         self.conv = nn.Conv2d(channels, hidden_dim, kernel_size=kernel_size, stride=1, padding=2)
         self.ReLU1 = nn.ReLU()
         self.pool = nn.MaxPool2d(kernel_size=3, stride=2)
 
-        self.linear1 = nn.Linear(hidden_dim * 16 * 16, 64)
+        # self.linear1 = nn.Linear(hidden_dim * 16 * 16, 64)
+        self.linear1 = nn.Linear(hidden_dim * 112 * 112, 64)
         self.ReLU2 = nn.ReLU()
 
         self.linear2 = nn.Linear(64, n_classes)
@@ -33,7 +36,6 @@ class MyModel(nn.Module):
         #############################################################################
         #                             END OF YOUR CODE                              #
         #############################################################################
-
 
     def forward(self, images):
         '''
@@ -55,12 +57,19 @@ class MyModel(nn.Module):
         #############################################################################
         # TODO: Implement the forward pass.
         #############################################################################
+        # print('images.size():', images.size())
+        # out1 = self.conv(images)
+        # print('conv out1.size():', out1.size())
+        # out1 = self.ReLU1(out1)
+        # print('relu out1.size():', out1.size())
+        # out1 = self.pool(out1)
+        # print('pool out1.size():', out1.size())
+        
         out1 = self.pool(self.ReLU1(self.conv(images)))
         out1 = out1.view(images.size()[0], -1)
-        out2 = self.ReLU2(self.linear1( out1 ))
-        scores = self.softmax(self.linear2( out2 ))
+        out2 = self.ReLU2(self.linear1(out1))
+        scores = self.softmax(self.linear2(out2))
         #############################################################################
         #                             END OF YOUR CODE                              #
         #############################################################################
         return scores
-
