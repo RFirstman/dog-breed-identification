@@ -60,10 +60,13 @@ n_classes = 120
 im_size = (3, 244, 244) # TODO
 
 # Datasets
-train_dataset, test_dataset, classes = load_datasets(args.data_dir)
+train_dataset, val_dataset, test_dataset, classes = load_datasets(args.data_dir)
+# train_dataset, test_dataset, classes = load_datasets(args.data_dir)
 
 # DataLoaders
 train_loader = torch.utils.data.DataLoader(train_dataset,
+                 batch_size=args.batch_size, shuffle=True, **kwargs)
+val_loader = torch.utils.data.DataLoader(val_dataset,
                  batch_size=args.batch_size, shuffle=True, **kwargs)
 test_loader = torch.utils.data.DataLoader(test_dataset,
                  batch_size=args.batch_size, shuffle=True, **kwargs)
@@ -74,7 +77,8 @@ if args.cuda:
     model.cuda()
 
 # Set up loss and optimizer
-criterion = nn.CrossEntropyLoss()
+# criterion = nn.CrossEntropyLoss()
+criterion = nn.CrossEntropyLoss(reduction='sum')
 optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
 
 def train(epoch):
@@ -120,14 +124,16 @@ def evaluate(split, verbose=False, n_batches=None):
     if split == 'test':
         loader = test_loader
     elif split == 'val':
-        print("No validation set implemented!")
+        # print("No validation set implemented!")
+        loader = val_loader
     for batch_i, batch in enumerate(loader):
         data, target = batch
         if args.cuda:
             data, target = data.cuda(), target.cuda()
         data, target = Variable(data, volatile=True), Variable(target)
         output = model(data)
-        loss += criterion(output, target, size_average=False).data
+        # loss += criterion(output, target, size_average=False).data
+        loss += criterion(output, target).data
         # predict the argmax of the log-probabilities
         pred = output.data.max(1, keepdim=True)[1]
         correct += pred.eq(target.data.view_as(pred)).cpu().sum()
