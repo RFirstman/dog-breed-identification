@@ -9,7 +9,7 @@ from torchvision import transforms
 from torch.autograd import Variable
 import torch.optim as optim
 import torch.nn as nn
-from scratchmodel.model01 import MyModel
+from scratchmodel.model02 import MyModel
 
 from data.load_data import load_datasets
 
@@ -72,7 +72,8 @@ test_loader = torch.utils.data.DataLoader(test_dataset,
                  batch_size=args.batch_size, shuffle=True, **kwargs)
 
 # TODO: Load the model
-model = MyModel(im_size, args.hidden_dim, args.kernel_size, n_classes)
+# model = MyModel(im_size, args.hidden_dim, args.kernel_size, n_classes)
+model = MyModel()
 if args.cuda:
     model.cuda()
 
@@ -126,20 +127,21 @@ def evaluate(split, verbose=False, n_batches=None):
     elif split == 'val':
         # print("No validation set implemented!")
         loader = val_loader
-    for batch_i, batch in enumerate(loader):
-        data, target = batch
-        if args.cuda:
-            data, target = data.cuda(), target.cuda()
-        data, target = Variable(data, volatile=True), Variable(target)
-        output = model(data)
-        # loss += criterion(output, target, size_average=False).data
-        loss += criterion(output, target).data
-        # predict the argmax of the log-probabilities
-        pred = output.data.max(1, keepdim=True)[1]
-        correct += pred.eq(target.data.view_as(pred)).cpu().sum()
-        n_examples += pred.size(0)
-        if n_batches and (batch_i >= n_batches):
-            break
+    with torch.no_grad():
+        for batch_i, batch in enumerate(loader):
+            data, target = batch
+            if args.cuda:
+                data, target = data.cuda(), target.cuda()
+            data, target = Variable(data), Variable(target)
+            output = model(data)
+            # loss += criterion(output, target, size_average=False).data
+            loss += criterion(output, target).data
+            # predict the argmax of the log-probabilities
+            pred = output.data.max(1, keepdim=True)[1]
+            correct += pred.eq(target.data.view_as(pred)).cpu().sum()
+            n_examples += pred.size(0)
+            if n_batches and (batch_i >= n_batches):
+                break
 
     loss /= n_examples
     acc = 100. * correct / n_examples

@@ -12,7 +12,7 @@ def load_datasets(root, input_size=224, print_stats=True):
     
     dataset_handler = StanfordDogsDatasetHandler(
         root,
-        cropped=False,
+        cropped=True,
         transform=input_transforms,
         download=True,
         verbose=False,
@@ -21,22 +21,6 @@ def load_datasets(root, input_size=224, print_stats=True):
     train = dataset_handler.train_dataset()
     val = dataset_handler.val_dataset()
     test = dataset_handler.test_dataset()
-
-    # train = StanfordDogsDataset(
-    #             root,
-    #             train=True,
-    #             cropped=False,
-    #             transform=input_transforms,
-    #             download=True
-    #         )
-
-    # test = StanfordDogsDataset(
-    #             root,
-    #             train=False,
-    #             cropped=False,
-    #             transform=input_transforms,
-    #             download=True
-    #         )
     
     classes = train.classes
 
