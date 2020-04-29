@@ -9,8 +9,8 @@ from torchvision import transforms
 from torch.autograd import Variable
 import torch.optim as optim
 import torch.nn as nn
-from scratchmodel.model02 import MyModel
 
+from scratchmodel.basicmodel import BasicCNN
 from data.load_data import load_datasets
 
 # Args
@@ -73,7 +73,7 @@ test_loader = torch.utils.data.DataLoader(test_dataset,
 
 # TODO: Load the model
 # model = MyModel(im_size, args.hidden_dim, args.kernel_size, n_classes)
-model = MyModel()
+model = BasicCNN(n_classes)
 if args.cuda:
     model.cuda()
 
