@@ -12,7 +12,7 @@ def load_datasets(root, input_size=224, print_stats=True):
     
     dataset_handler = StanfordDogsDatasetHandler(
         root,
-        cropped=True,
+        cropped=False,
         transform=input_transforms,
         download=True,
         verbose=False,
